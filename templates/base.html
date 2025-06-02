@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}StockyMarket{% endblock %}</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <style>
+    /* Reset */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0f1115; /* very dark */
+      color: #e1e1e1;
+      min-height: 100vh;
+    }
+
+    nav {
+      position: fixed;
+      width: 100%;
+      top: 0; left: 0;
+      background: transparent;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      transition: background-color 0.3s ease;
+    }
+
+    nav.scrolled {
+      background-color: #181a1f;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.7);
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: #00a8e8;
+      cursor: pointer;
+      letter-spacing: 1.2px;
+      user-select: none;
+    }
+
+    ul.nav-links {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    ul.nav-links li a {
+      color: #e1e1e1;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      transition: color 0.3s ease;
+    }
+    ul.nav-links li a:hover {
+      color: #00a8e8;
+    }
+
+    main {
+      padding: 7rem 2rem 3rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    button.btn-primary {
+      background: #00a8e8;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 30px;
+      font-weight: 600;
+      color: #0f1115;
+      cursor: pointer;
+      box-shadow: 0 0 15px #00a8e8aa;
+      transition: all 0.3s ease;
+    }
+    button.btn-primary:hover {
+      background: #0087c3;
+      box-shadow: 0 0 25px #0087c3cc;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .hero h1 {
+      font-weight: 700;
+      font-size: 3.8rem;
+      letter-spacing: 1.4px;
+      margin-bottom: 1rem;
+      color: #00a8e8;
+      text-shadow: 0 0 10px #00a8e8cc;
+    }
+    .hero p {
+      font-size: 1.3rem;
+      color: #cbd5e1;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .features {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .feature-card {
+      background: #181a1f;
+      border-radius: 16px;
+      padding: 2rem;
+      width: 280px;
+      box-shadow: 0 0 15px #00a8e8aa;
+      transition: transform 0.3s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 30px #00a8e8dd;
+    }
+    .feature-card h3 {
+      color: #00a8e8;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .feature-card p {
+      color: #cbd5e1;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    /* Responsive */
+    @media(max-width: 768px) {
+      .features {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <div class="logo" onclick="location.href='{{ url_for('home') }}'">StockyMarket</div>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      {% if 'user_id' in session %}
+      <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('logout') }}">Logout</a></li>
+      {% else %}
+      <li><a href="{{ url_for('login') }}">Login</a></li>
+      <li><a href="{{ url_for('register') }}">Register</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <script>
+   
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+  </script>
+</body>
+</html>

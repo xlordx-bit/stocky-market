@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}Download Data | StockyMarket{% endblock %}
+
+{% block content %}
+<section class="download-section animate__animated animate__fadeIn">
+  <h2>Download Stock Data</h2>
+
+  <form id="downloadForm" method="POST" action="{{ url_for('download') }}">
+    <div class="form-group">
+      <label for="stock_code">Stock Code</label>
+      <input type="text" id="stock_code" name="stock_code" placeholder="e.g. AAPL" required>
+    </div>
+
+    <div class="form-group">
+      <label for="exchange_code">Exchange Code</label>
+      <input type="text" id="exchange_code" name="exchange_code" placeholder="e.g. NASDAQ" required>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="from_date">From Date</label>
+        <input type="date" id="from_date" name="from_date" required>
+      </div>
+      <div class="form-group">
+        <label for="to_date">To Date</label>
+        <input type="date" id="to_date" name="to_date" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="interval">Interval</label>
+      <select id="interval" name="interval" required>
+        <option value="">Select interval</option>
+        <option value="1m">1 Minute</option>
+        <option value="5m">5 Minutes</option>
+        <option value="15m">15 Minutes</option>
+        <option value="1h">1 Hour</option>
+        <option value="1d">1 Day</option>
+        <option value="1w">1 Week</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="product_type">Product Type</label>
+      <input type="text" id="product_type" name="product_type" placeholder="e.g. Equity, Futures" required>
+    </div>
+
+    <div class="form-group">
+      <label for="right">Right</label>
+      <input type="text" id="right" name="right" placeholder="e.g. Call, Put" required>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="strike_price_start">Strike Price Start</label>
+        <input type="number" id="strike_price_start" name="strike_price_start" min="0" step="0.01" placeholder="Start range" required>
+      </div>
+      <div class="form-group">
+        <label for="strike_price_end">Strike Price End</label>
+        <input type="number" id="strike_price_end" name="strike_price_end" min="0" step="0.01" placeholder="End range" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="expiry_date">Expiry Date</label>
+      <input type="date" id="expiry_date" name="expiry_date" required>
+    </div>
+
+    <button id="downloadbtn"type="submit">Download</button>
+  </form>
+</section>
+<script>
+  document.getElementById("downloadbtn").addEventListener("click", function() {
+    window.location.href = "{{ url_for('order_taking') }}";
+  });
+</script>
+
+<style>
+  .download-section {
+    max-width: 600px;
+    margin: 3rem auto;
+    background: #181a1f;
+    padding: 2rem 2.5rem;
+    border-radius: 14px;
+    color: #e1e1e1;
+    box-shadow: 0 0 20px #00a8e8aa;
+  }
+
+  .download-section h2 {
+    color: #00a8e8;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px #00a8e8cc;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+
+  input[type="text"],
+  input[type="date"],
+  input[type="number"],
+  select {
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: none;
+    background: #24272e;
+    color: #e1e1e1;
+    font-size: 1rem;
+  }
+
+  input::placeholder {
+    color: #7a7f8c;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .form-row .form-group {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  button {
+    padding: 0.9rem;
+    border: none;
+    border-radius: 12px;
+    background: #00a8e8;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00a8e8bb;
+    transition: background-color 0.3s ease;
+    margin-top: 0.5rem;
+  }
+
+  button:hover {
+    background: #0077b6;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .form-row {
+      flex-direction: column;
+    }
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}Order Taking | StockyMarket{% endblock %}
+
+{% block content %}
+<section class="order-section animate__animated animate__fadeIn">
+  <h2>Place Your Order</h2>
+
+  <form id="orderForm">
+    <div class="form-group">
+      <label for="nifty">Nifty</label>
+      <input type="number" id="nifty" name="nifty" placeholder="e.g. 22000" required>
+    </div>
+
+    <div class="form-group">
+      <label for="call">Call</label>
+      <input type="number" id="call" name="call" placeholder="e.g. 150" required>
+    </div>
+
+    <div class="form-group">
+      <label for="put">Put</label>
+      <input type="number" id="put" name="put" placeholder="e.g. 120" required>
+    </div>
+
+    <div class="form-group">
+      <label for="orderlog">Order Log</label>
+      <input type="text" id="orderlog" name="orderlog" placeholder="e.g. Buy CE">
+    </div>
+
+    <div class="form-group">
+      <label for="nifty_slope">Nifty Slope</label>
+      <input type="number" step="0.01" id="nifty_slope" name="nifty_slope" placeholder="e.g. 1.2">
+    </div>
+
+    <div class="form-group">
+      <label for="call_slope">Call Slope</label>
+      <input type="number" step="0.01" id="call_slope" name="call_slope" placeholder="e.g. 0.9">
+    </div>
+
+    <div class="form-group">
+      <label for="put_slope">Put Slope</label>
+      <input type="number" step="0.01" id="put_slope" name="put_slope" placeholder="e.g. 0.8">
+    </div>
+
+    <div class="form-group">
+      <label for="stoplog">Stop Log</label>
+      <input type="text" id="stoplog" name="stoplog" placeholder="e.g. SL=30">
+    </div>
+
+    <div class="form-group">
+      <label for="target">Target</label>
+      <input type="text" id="target" name="target" placeholder="e.g. Target=60">
+    </div>
+
+    <button type="submit">Place Order</button>
+  </form>
+
+  <!-- Popup -->
+  <div id="orderPopup" class="popup">
+    <div class="popup-content">
+      <h3>Order Completed ✅</h3>
+      <button onclick="closePopup()">Close</button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .order-section {
+    max-width: 600px;
+    margin: 3rem auto;
+    background: #181a1f;
+    padding: 2rem 2.5rem;
+    border-radius: 14px;
+    color: #e1e1e1;
+    box-shadow: 0 0 20px #00a8e8aa;
+  }
+
+  .order-section h2 {
+    color: #00a8e8;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px #00a8e8cc;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: none;
+    background: #24272e;
+    color: #e1e1e1;
+    font-size: 1rem;
+  }
+
+  input::placeholder {
+    color: #7a7f8c;
+  }
+
+  button {
+    padding: 0.9rem;
+    border: none;
+    border-radius: 12px;
+    background: #00a8e8;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00a8e8bb;
+    transition: background-color 0.3s ease;
+    margin-top: 0.5rem;
+  }
+
+  button:hover {
+    background: #0077b6;
+  }
+
+  /* Popup Styles */
+  .popup {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  .popup-content {
+    background: #1c1f26;
+    color: #e1e1e1;
+    border-radius: 14px;
+    padding: 2rem;
+    width: 300px;
+    margin: 10% auto;
+    box-shadow: 0 0 15px #00a8e8cc;
+    text-align: center;
+  }
+
+  .popup-content h3 {
+    margin-bottom: 1.5rem;
+    color: #00e676;
+  }
+</style>
+
+<script>
+  const form = document.getElementById("orderForm");
+  const popup = document.getElementById("orderPopup");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault(); // prevent actual submission
+    popup.style.display = "block";
+  });
+
+  function closePopup() {
+    popup.style.display = "none";
+    form.reset(); // optional: reset the form after closing
+  }
+</script>
+
+{% endblock %}
