@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block title %}Register | StockyMarket{% endblock %}
+
+{% block content %}
+<section class="form-container animate__animated animate__fadeInUp">
+  <h2>Create Your Account</h2>
+  <form method="POST" action="{{ url_for('register') }}">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required placeholder="Choose a username" autocomplete="username">
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required placeholder="you@example.com" autocomplete="email">
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required placeholder="Create a strong password" autocomplete="new-password">
+
+    <button type="submit" class="btn-primary">Register</button>
+  </form>
+  <p class="redirect-text">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+</section>
+
+<style>
+  /* Container with animated chart-like background */
+  .form-container {
+    position: relative;
+    background: #121417;
+    max-width: 420px;
+    margin: 4rem auto 3rem;
+    padding: 3.5rem 3rem 4rem;
+    border-radius: 18px;
+    color: #e1e1e1;
+    overflow: hidden;
+    box-shadow:
+      0 0 30px #00cfffcc,
+      inset 0 0 35px #00344d;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 1;
+  }
+
+  /* Animated chart background using diagonal lines */
+  .form-container::before {
+    content: "";
+    position: absolute;
+    top: -30%;
+    left: -20%;
+    width: 140%;
+    height: 160%;
+    background: repeating-linear-gradient(
+      45deg,
+      #00a8e8aa,
+      #00a8e8aa 2px,
+      transparent 3px,
+      transparent 8px
+    );
+    animation: waveMove 6s linear infinite;
+    filter: blur(5px);
+    opacity: 0.2;
+    border-radius: 50%;
+    z-index: 0;
+  }
+
+  @keyframes waveMove {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 100% 100%;
+    }
+  }
+
+  /* Ensure content is above background */
+  .form-container > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Heading */
+  .form-container h2 {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-weight: 900;
+    font-size: 2.4rem;
+    color: #00e5ff;
+    text-shadow:
+      0 0 8px #00e5ffcc,
+      0 0 20px #00b1c8aa;
+    letter-spacing: 1.5px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: #7ac7e8;
+    letter-spacing: 0.05em;
+    user-select: none;
+  }
+
+  /* Inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    border: 2.5px solid #0099cc;
+    border-radius: 40px;
+    background-color: #0c0f13;
+    color: #a0e9ff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    box-shadow:
+      inset 0 0 15px #0078a9cc,
+      0 0 10px #00aaffaa;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.4s ease,
+      background-color 0.3s ease;
+  }
+
+  input[type="text"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="password"]::placeholder {
+    color: #55b5d9aa;
+    font-weight: 500;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+    outline: none;
+    border-color: #00ffff;
+    background-color: #121820;
+    box-shadow:
+      0 0 25px #00ffffcc,
+      inset 0 0 25px #00ffffbb;
+    color: #d0fbff;
+  }
+
+  /* Button */
+  .btn-primary {
+    padding: 1.1rem 0;
+    font-weight: 900;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #121417;
+    background: linear-gradient(90deg, #00ffff, #0088cc);
+    border-radius: 50px;
+    border: none;
+    box-shadow:
+      0 0 25px #00ffffdd,
+      0 10px 25px #00cccccc;
+    transition:
+      background 0.4s ease,
+      box-shadow 0.6s ease,
+      transform 0.25s ease;
+    user-select: none;
+  }
+
+  .btn-primary:hover,
+  .btn-primary:focus {
+    background: linear-gradient(90deg, #00ccff, #004466);
+    box-shadow:
+      0 0 35px #00ccffee,
+      0 15px 35px #0077aaee;
+    transform: translateY(-4px);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+    box-shadow:
+      0 0 20px #005577cc;
+  }
+
+  /* Redirect text */
+  .redirect-text {
+    margin-top: 2rem;
+    font-size: 1rem;
+    text-align: center;
+    color: #6bb8d9cc;
+    user-select: none;
+  }
+
+  .redirect-text a {
+    color: #00e5ff;
+    text-decoration: none;
+    font-weight: 800;
+    transition: color 0.3s ease;
+  }
+
+  .redirect-text a:hover,
+  .redirect-text a:focus {
+    color: #0099cc;
+    text-decoration: underline;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .form-container {
+      margin: 2.5rem 1rem 3rem;
+      padding: 3rem 1.7rem 3.5rem;
+      max-width: 95vw;
+      border-radius: 14px;
+    }
+
+    .form-container h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      font-size: 1rem;
+      padding: 0.9rem 1.2rem;
+    }
+
+    .btn-primary {
+      font-size: 1.15rem;
+      padding: 1rem 0;
+    }
+  }
+</style>
+
+{% endblock %}

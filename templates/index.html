@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+{% block title %}Home | StockyMarket{% endblock %}
+
+{% block content %}
+<!-- Animated Stock Graph Background -->
+<canvas id="stockCanvas" aria-hidden="true"></canvas>
+
+<section class="hero animate__animated animate__fadeInDown" role="banner" aria-label="Welcome Section">
+  <h1>StockyMarket 📈</h1>
+  <p>Your ultimate real-time stock market companion with smart insights and personalized watchlists.</p>
+  <button class="btn-primary" onclick="location.href='{{ url_for('register') }}'" aria-label="Get Started by Registering">Get Started</button>
+</section>
+
+<!-- Ticker -->
+<div class="ticker" aria-live="polite" aria-atomic="true" role="region" aria-label="Market prices ticker">
+  <div class="ticker__wrap" id="ticker-wrap">
+    <span>NIFTY 50: <span id="nifty-price" aria-live="polite" aria-atomic="true">--</span></span>
+    <span>SENSEX: <span id="sensex-price" aria-live="polite" aria-atomic="true">--</span></span>
+    <span>RELIANCE: <span id="reliance-price" aria-live="polite" aria-atomic="true">--</span></span>
+    <span>INFY: <span id="infy-price" aria-live="polite" aria-atomic="true">--</span></span>
+    <span>HDFCBANK: <span id="hdfc-price" aria-live="polite" aria-atomic="true">--</span></span>
+  </div>
+</div>
+
+<section class="features animate__animated animate__fadeInUp animate__delay-1s" aria-label="Features of StockyMarket">
+  <div class="feature-card" tabindex="0">
+    <h3>Live Market Updates</h3>
+    <p>Stay informed with the latest real-time stock prices and market trends.</p>
+  </div>
+  <div class="feature-card" tabindex="0">
+    <h3>Personalized Dashboard</h3>
+    <p>Track your favorite stocks, watchlists, and get alerts tailored just for you.</p>
+  </div>
+  <div class="feature-card" tabindex="0">
+    <h3>Expert Analysis</h3>
+    <p>Receive smart insights and recommendations from market experts.</p>
+  </div>
+</section>
+
+<!-- Optional: Testimonials or News Cards -->
+<section class="extras" aria-label="Market news and updates">
+  <div class="news-card" tabindex="0">
+    <h4>📢 Breaking Market News</h4>
+    <p>Nifty hits all-time high as tech and bank stocks rally.</p>
+  </div>
+  <div class="news-card" tabindex="0">
+    <h4>🔥 Top Gainer</h4>
+    <p>Reliance surges 4.2% amid strong quarterly results.</p>
+  </div>
+</section>
+
+<!-- Stock Graph Animation Script -->
+<script>
+  const canvas = document.getElementById('stockCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  const points = [];
+  const pointSpacing = 15;
+  const totalPoints = Math.floor(width / pointSpacing) + 2;
+
+  // Initialize points randomly near vertical center
+  for (let i = 0; i < totalPoints; i++) {
+    points.push({
+      x: i * pointSpacing,
+      y: height / 2 + Math.random() * 60 - 30
+    });
+  }
+
+  function animateGraph() {
+    ctx.clearRect(0, 0, width, height);
+
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+
+    ctx.strokeStyle = '#00ffcc';
+    ctx.lineWidth = 2;
+    ctx.shadowColor = '#00ffcc88';
+    ctx.shadowBlur = 8;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Move points left and add new point at right
+    points.shift();
+    const lastPoint = points[points.length - 1];
+    let newY = lastPoint.y + (Math.random() * 20 - 10);
+    // Clamp Y within visible vertical range
+    newY = Math.min(height - 50, Math.max(50, newY));
+
+    points.push({ x: lastPoint.x + pointSpacing, y: newY });
+
+    // Shift all points to left by 1px for smooth animation
+    for (let p of points) {
+      p.x -= 1;
+    }
+
+    requestAnimationFrame(animateGraph);
+  }
+
+  animateGraph();
+
+  // Resize canvas on window resize
+  window.addEventListener('resize', () => {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    // Recalculate points for new width
+    points.length = 0;
+    for (let i = 0; i < Math.floor(width / pointSpacing) + 2; i++) {
+      points.push({
+        x: i * pointSpacing,
+        y: height / 2 + Math.random() * 60 - 30
+      });
+    }
+  });
+</script>
+
+<!-- Dynamic Market Data Fetch -->
+<script>
+  async function fetchMarketData() {
+    try {
+      const response = await fetch('/api/market_data');
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        document.getElementById("nifty-price").textContent = result.data["NIFTY 50"] ?? "--";
+        document.getElementById("sensex-price").textContent = result.data["SENSEX"] ?? "--";
+        document.getElementById("reliance-price").textContent = result.data["RELIANCE"] ?? "--";
+        document.getElementById("infy-price").textContent = result.data["INFY"] ?? "--";
+        document.getElementById("hdfc-price").textContent = result.data["HDFCBANK"] ?? "--";
+      } else {
+        console.error("Failed to fetch market data:", result.error);
+      }
+    } catch (error) {
+      console.error("Error fetching market data:", error);
+    }
+  }
+
+  fetchMarketData();
+  setInterval(fetchMarketData, 30000);
+</script>
+
+<style>
+  /* Canvas background */
+  #stockCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background: transparent;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+  }
+
+  /* Ticker styles */
+  .ticker {
+    overflow: hidden;
+    white-space: nowrap;
+    box-shadow: inset 0 0 8px #00ffcc66;
+    border-top: 1px solid #00ffcc33;
+    border-bottom: 1px solid #00ffcc33;
+    margin: 0 0 2rem 0;
+    padding: 0.5rem 1rem;
+    color: #00ffcc;
+    font-weight: 700;
+    background: rgba(0, 0, 0, 0.3);
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    user-select: none;
+  }
+
+  .ticker__wrap {
+    display: inline-block;
+    animation: tickerScroll 15s linear infinite;
+  }
+
+  .ticker__wrap span {
+    display: inline-block;
+    padding: 0 2rem;
+  }
+
+  @keyframes tickerScroll {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  /* Features Section */
+  .features {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .feature-card {
+    background: #181a1f;
+    border-radius: 16px;
+    padding: 2rem;
+    width: 280px;
+    box-shadow: 0 0 15px #00a8e8aa;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    outline-offset: 2px;
+  }
+  .feature-card:hover,
+  .feature-card:focus {
+    transform: translateY(-10px);
+    box-shadow: 0 0 30px #00a8e8dd;
+    outline: none;
+  }
+
+  .feature-card h3 {
+    color: #00a8e8;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  .feature-card p {
+    color: #cbd5e1;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  /* Extras Section */
+  .extras {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .news-card {
+    background: rgba(0, 255, 204, 0.07);
+    padding: 1.5rem;
+    border-left: 4px solid #00ffcc;
+    border-radius: 12px;
+    width: 300px;
+    color: #fff;
+    box-shadow: 0 0 10px #00ffcc33;
+    outline-offset: 2px;
+  }
+
+  .news-card h4 {
+    margin-bottom: 0.5rem;
+    color: #00ffcc;
+    font-weight: 600;
+  }
+
+  .news-card:focus {
+    outline: 2px solid #00ffcc;
+  }
+
+  /* Hero Section */
+  .hero {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+  .hero h1 {
+    font-weight: 700;
+    font-size: 3.8rem;
+    letter-spacing: 1.4px;
+    margin-bottom: 1rem;
+    color: #00a8e8;
+    text-shadow: 0 0 10px #00a8e8cc;
+  }
+  .hero p {
+    font-size: 1.3rem;
+    color: #cbd5e1;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (max-width: 768px) {
+    .features {
+      flex-direction: column;
+      align-items: center;
+    }
+    .feature-card {
+      width: 90%;
+    }
+    .extras {
+      flex-direction: column;
+      align-items: center;
+    }
+    .news-card {
+      width: 90%;
+    }
+  }
+</style>
+{% endblock %}
